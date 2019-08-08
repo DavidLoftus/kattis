@@ -53,6 +53,7 @@ def usage():
 def fetchSamples(name, tmp_file = None):
     url = 'https://open.kattis.com/problems/{0}/file/statement/samples.zip'.format(name)
     r = requests.get(url, stream=True)
+    r.raise_for_status()
     
     if tmp_file is None:
         tmp_file = tempfile.TemporaryFile()
@@ -89,8 +90,16 @@ if __name__ == "__main__":
     
     sample_dir = os.path.join(name, 'samples')
 
-    if not os.path.exists(sample_dir):
-        os.makedirs(sample_dir)
+    try:
+        with fetchSamples(name) as sample_zip_file:
+            if not os.path.exists(sample_dir):
+                os.makedirs(sample_dir)
+            with ZipFile(sample_zip_file) as zipObj:
+                sample_names = [ os.path.splitext(sample_name)[0] for sample_name in zipObj.namelist() if sample_name.endswith('.in') ]
+                zipObj.extractall(sample_dir)
+    except requests.exceptions.HTTPError as e:
+        print('{name} not found.'.format(name=name))
+        exit(1)
 
     replDict = {
         "__name__": name,
@@ -102,11 +111,6 @@ if __name__ == "__main__":
     copyTemplate('template/__name__.cpp', os.path.join(name, name + '.cpp'), replDict)
     copyTemplate('template/__name__.hpp', os.path.join(name, name + '.hpp'), replDict)
     copyTemplate('template/_BUILD', os.path.join(name, 'BUILD'), replDict)
-
-    with fetchSamples(name) as sample_zip_file:
-        with ZipFile(sample_zip_file) as zipObj:
-            sample_names = [ os.path.splitext(sample_name)[0] for sample_name in zipObj.namelist() if sample_name.endswith('.in') ]
-            zipObj.extractall(sample_dir)
         
     with open(os.path.join(name, 'test.cpp'), 'w') as f:
         f.write(testIncludeString.format(name = name))
