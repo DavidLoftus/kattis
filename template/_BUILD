@@ -1,0 +1,30 @@
+
+cc_library(
+    name = "__name___lib",
+    srcs = ["__name__.cpp"],
+    hdrs = ["__name__.hpp"],
+)
+
+cc_binary(
+    name = "__name__",
+    srcs = ["main.cpp"],
+    deps = [":__name___lib"],
+)
+
+filegroup(
+    name = "__name___samples",
+    srcs = glob([
+        "samples/*.in",
+        "samples/*.ans",
+    ]),
+)
+
+cc_test(
+    name = "__name___test",
+    srcs = ["test.cpp"],
+    deps = [
+        ":__name___lib",
+        "@googletest//:gtest_main",
+    ],
+    data = [":__name___samples"],
+)
