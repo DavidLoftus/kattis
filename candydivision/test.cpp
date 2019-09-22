@@ -6,7 +6,7 @@
 
 #include "candydivision.hpp"
 
-TEST(TestCandydivision, 00.sampleSample) {
+TEST(TestCandydivision, 00_sampleSample) {
 
     std::stringstream ss;
     {
