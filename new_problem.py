@@ -6,6 +6,7 @@ import shutil
 import tempfile
 import requests
 from zipfile import ZipFile
+import argparse
 
 testIncludeString = '''#include <sstream>
 #include <fstream>
@@ -65,7 +66,6 @@ def fetchSamples(name, tmp_file = None):
     return tmp_file
 
 def copyTemplate(src, dst, replDict):
-
     with open(src, 'r') as f:
         content = f.read()
     
@@ -75,7 +75,18 @@ def copyTemplate(src, dst, replDict):
     with open(dst, 'w') as f:
         f.write(content)
 
-
+def writeTests(name, aname, sample_names):
+    with open(os.path.join(name, 'test.cpp'), 'w') as f:
+        f.write(testIncludeString.format(name = name))
+        for sample_name in sample_names:
+            s = testSampleBodyString.format(
+                aname = aname,
+                name = name,
+                Name = name.capitalize(),
+                sample = sample_name,
+                Sample = sample_name.capitalize()
+            )
+            f.write(s)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -90,13 +101,14 @@ if __name__ == "__main__":
     
     sample_dir = os.path.join(name, 'samples')
 
+
     try:
         with fetchSamples(name) as sample_zip_file:
             if not os.path.exists(sample_dir):
                 os.makedirs(sample_dir)
             with ZipFile(sample_zip_file) as zipObj:
-                sample_names = [ os.path.splitext(sample_name)[0] for sample_name in zipObj.namelist() if sample_name.endswith('.in') ]
                 zipObj.extractall(sample_dir)
+                sample_names = [ os.path.splitext(sample_name)[0] for sample_name in os.listdir(sample_dir) if sample_name.endswith('.in') ]
     except requests.exceptions.HTTPError as e:
         print('{name} not found.'.format(name=name))
         exit(1)
@@ -108,18 +120,9 @@ if __name__ == "__main__":
     }
     
     copyTemplate('template/main.cpp', os.path.join(name, 'main.cpp'), replDict)
-    copyTemplate('template/__name__.cpp', os.path.join(name, name + '.cpp'), replDict)
-    copyTemplate('template/__name__.hpp', os.path.join(name, name + '.hpp'), replDict)
+    if not os.path.exists( os.path.join(name, name + '.cpp') ):
+        copyTemplate('template/__name__.cpp', os.path.join(name, name + '.cpp'), replDict)
+        copyTemplate('template/__name__.hpp', os.path.join(name, name + '.hpp'), replDict)
     copyTemplate('template/_BUILD', os.path.join(name, 'BUILD'), replDict)
-        
-    with open(os.path.join(name, 'test.cpp'), 'w') as f:
-        f.write(testIncludeString.format(name = name))
-        for sample_name in sample_names:
-            s = testSampleBodyString.format(
-                aname = aname,
-                name = name,
-                Name = name.capitalize(),
-                sample = sample_name,
-                Sample = sample_name.capitalize()
-            )
-            f.write(s)
+
+    writeTests(aname, name, sample_names)
