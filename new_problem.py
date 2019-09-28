@@ -51,42 +51,46 @@ TEST(Test{Name}, {Sample}Sample) {{
 def usage():
     print('Usage: {0} <problem_name>'.format(sys.argv[0]))
 
-def fetchSamples(name, tmp_file = None):
+
+def fetch_samples(name, tmp_file=None):
     url = 'https://open.kattis.com/problems/{0}/file/statement/samples.zip'.format(name)
     r = requests.get(url, stream=True)
     r.raise_for_status()
-    
+
     if tmp_file is None:
         tmp_file = tempfile.TemporaryFile()
-    
+
     shutil.copyfileobj(r.raw, tmp_file)
 
     tmp_file.seek(0)
 
     return tmp_file
 
-def copyTemplate(src, dst, replDict):
+
+def copy_template(src, dst, replDict):
     with open(src, 'r') as f:
         content = f.read()
-    
-    for old,new in replDict.items():
+
+    for old, new in replDict.items():
         content = content.replace(old, new)
 
     with open(dst, 'w') as f:
         f.write(content)
 
-def writeTests(name, aname, sample_names):
+
+def write_tests(name, aname, sample_names):
     with open(os.path.join(name, 'test.cpp'), 'w') as f:
-        f.write(testIncludeString.format(name = name))
+        f.write(testIncludeString.format(name=name))
         for sample_name in sample_names:
             s = testSampleBodyString.format(
-                aname = aname,
-                name = name,
-                Name = name.capitalize(),
-                sample = sample_name,
-                Sample = sample_name.capitalize()
+                aname=aname,
+                name=name,
+                Name=name.capitalize(),
+                sample=sample_name,
+                Sample=sample_name.capitalize()
             )
             f.write(s)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -98,17 +102,17 @@ if __name__ == "__main__":
         aname = '_' + name
     else:
         aname = name
-    
+
     sample_dir = os.path.join(name, 'samples')
 
-
     try:
-        with fetchSamples(name) as sample_zip_file:
+        with fetch_samples(name) as sample_zip_file:
             if not os.path.exists(sample_dir):
                 os.makedirs(sample_dir)
             with ZipFile(sample_zip_file) as zipObj:
                 zipObj.extractall(sample_dir)
-                sample_names = [ os.path.splitext(sample_name)[0] for sample_name in os.listdir(sample_dir) if sample_name.endswith('.in') ]
+                sample_names = [os.path.splitext(sample_name)[0] for sample_name in os.listdir(sample_dir) if
+                                sample_name.endswith('.in')]
     except requests.exceptions.HTTPError as e:
         print('{name} not found.'.format(name=name))
         exit(1)
@@ -118,11 +122,11 @@ if __name__ == "__main__":
         "__aname__": aname,
         "__Name__": name.capitalize()
     }
-    
-    copyTemplate('template/main.cpp', os.path.join(name, 'main.cpp'), replDict)
-    if not os.path.exists( os.path.join(name, name + '.cpp') ):
-        copyTemplate('template/__name__.cpp', os.path.join(name, name + '.cpp'), replDict)
-        copyTemplate('template/__name__.hpp', os.path.join(name, name + '.hpp'), replDict)
-    copyTemplate('template/_BUILD', os.path.join(name, 'BUILD'), replDict)
 
-    writeTests(aname, name, sample_names)
+    copy_template('template/main.cpp', os.path.join(name, 'main.cpp'), replDict)
+    if not os.path.exists(os.path.join(name, name + '.cpp')):
+        copy_template('template/__name__.cpp', os.path.join(name, name + '.cpp'), replDict)
+        copy_template('template/__name__.hpp', os.path.join(name, name + '.hpp'), replDict)
+    copy_template('template/_BUILD', os.path.join(name, 'BUILD'), replDict)
+
+    write_tests(aname, name, sample_names)
