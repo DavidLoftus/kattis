@@ -20,17 +20,17 @@ TEST(TestForestevolution, 02Sample) {
     ASSERT_FALSE(ans.fail());
 
     int lineCount = 0;
-    std::string got, want;
+    double got, want;
 
     for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
+        ss >> got;
+        ans >> want;
         if(ss.fail() && ans.fail()) {
             break;
         }
 
         ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
+        ASSERT_NEAR(got, want, 0.001) << "line = " << lineCount;
     }
 }
 
@@ -48,16 +48,16 @@ TEST(TestForestevolution, 01Sample) {
     ASSERT_FALSE(ans.fail());
 
     int lineCount = 0;
-    std::string got, want;
+    double got, want;
 
     for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
+        ss >> got;
+        ans >> want;
         if(ss.fail() && ans.fail()) {
             break;
         }
 
         ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
+        ASSERT_NEAR(got, want, 0.001) << "line = " << lineCount;
     }
 }
