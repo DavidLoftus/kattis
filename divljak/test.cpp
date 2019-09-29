@@ -6,7 +6,7 @@
 
 #include "divljak.hpp"
 
-TEST(TestDivljak, Divljak.1Sample) {
+TEST(TestDivljak, Divljak_1Sample) {
 
     std::stringstream ss;
     {
@@ -34,7 +34,7 @@ TEST(TestDivljak, Divljak.1Sample) {
     }
 }
 
-TEST(TestDivljak, Divljak.2Sample) {
+TEST(TestDivljak, Divljak_2Sample) {
 
     std::stringstream ss;
     {
