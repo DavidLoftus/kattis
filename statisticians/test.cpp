@@ -20,18 +20,14 @@ TEST(TestStatisticians, 2Sample) {
     ASSERT_FALSE(ans.fail());
 
     int lineCount = 0;
-    std::string got, want;
+    double got, want;
+    ss >> got;
+    ans >> want;
 
-    for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
-        if(ss.fail() && ans.fail()) {
-            break;
-        }
+    ASSERT_FALSE(ss.fail());
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
-    }
+    ++lineCount;
+    ASSERT_NEAR(got, want, 0.001) << "line = " << lineCount;
 }
 
 TEST(TestStatisticians, 1Sample) {
@@ -48,16 +44,12 @@ TEST(TestStatisticians, 1Sample) {
     ASSERT_FALSE(ans.fail());
 
     int lineCount = 0;
-    std::string got, want;
+    double got, want;
+    ss >> got;
+    ans >> want;
 
-    for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
-        if(ss.fail() && ans.fail()) {
-            break;
-        }
+    ASSERT_FALSE(ss.fail());
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
-    }
+    ++lineCount;
+    ASSERT_NEAR(got, want, 0.001) << "line = " << lineCount;
 }
