@@ -23,7 +23,7 @@ void solution(std::istream& in, std::ostream& out) {
     }
 
     if (left == cards.size()) {
-        left = right = 1;
+        left = right = cards.size()/2;
     } else {
         while (cards[right] == sortedCards[right]) {
             --right;
