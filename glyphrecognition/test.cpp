@@ -19,19 +19,14 @@ TEST(TestGlyphrecognition, 2Sample) {
     std::ifstream ans("glyphrecognition/samples/2.ans");
     ASSERT_FALSE(ans.fail());
 
-    int lineCount = 0;
-    std::string got, want;
+    int k_got, k_want;
+    double score_got, score_want;
+    ASSERT_TRUE(ss >> k_got >> score_got);
 
-    for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
-        if(ss.fail() && ans.fail()) {
-            break;
-        }
+    ans >> k_want >> score_want;
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
-    }
+    ASSERT_EQ(k_got, k_want);
+    ASSERT_NEAR(score_got, score_want, 0.000001);
 }
 
 TEST(TestGlyphrecognition, 1Sample) {
@@ -47,17 +42,12 @@ TEST(TestGlyphrecognition, 1Sample) {
     std::ifstream ans("glyphrecognition/samples/1.ans");
     ASSERT_FALSE(ans.fail());
 
-    int lineCount = 0;
-    std::string got, want;
+    int k_got, k_want;
+    double score_got, score_want;
+    ASSERT_TRUE(ss >> k_got >> score_got);
 
-    for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
-        if(ss.fail() && ans.fail()) {
-            break;
-        }
+    ans >> k_want >> score_want;
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
-    }
+    ASSERT_EQ(k_got, k_want);
+    ASSERT_NEAR(score_got, score_want, 0.000001);
 }
