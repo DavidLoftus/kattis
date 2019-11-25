@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys
 import os
@@ -6,7 +6,6 @@ import shutil
 import tempfile
 import requests
 from zipfile import ZipFile
-import argparse
 
 testIncludeString = '''#include <sstream>
 #include <fstream>
