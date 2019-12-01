@@ -6,6 +6,12 @@
 
 #include "averagerank.hpp"
 
+#define MAX_ERROR 0.000001
+bool inBounds(double expected, double actual) {
+    double delta = std::abs(expected - actual);
+    return delta <= MAX_ERROR || delta/expected <= MAX_ERROR;
+}
+
 TEST(TestAveragerank, 2Sample) {
 
     std::stringstream ss;
@@ -19,18 +25,18 @@ TEST(TestAveragerank, 2Sample) {
     std::ifstream ans("averagerank/samples/2.ans");
     ASSERT_FALSE(ans.fail());
 
-    int lineCount = 0;
-    std::string got, want;
+    int i = 0;
+    double got, want;
 
     for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
+        ss >> got;
+        ans >> want;
         if(ss.fail() && ans.fail()) {
             break;
         }
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
+        ASSERT_TRUE(inBounds(want, got)) << "want = " << want << " got = " << got << " i = " << i;
+        ++i;
     }
 }
 
@@ -47,18 +53,18 @@ TEST(TestAveragerank, 3Sample) {
     std::ifstream ans("averagerank/samples/3.ans");
     ASSERT_FALSE(ans.fail());
 
-    int lineCount = 0;
-    std::string got, want;
+    int i = 0;
+    double got, want;
 
     for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
+        ss >> got;
+        ans >> want;
         if(ss.fail() && ans.fail()) {
             break;
         }
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
+        ASSERT_TRUE(inBounds(want, got)) << "want = " << want << " got = " << got << " i = " << i;
+        ++i;
     }
 }
 
@@ -75,17 +81,17 @@ TEST(TestAveragerank, 1Sample) {
     std::ifstream ans("averagerank/samples/1.ans");
     ASSERT_FALSE(ans.fail());
 
-    int lineCount = 0;
-    std::string got, want;
+    int i = 0;
+    double got, want;
 
     for (;;) {
-        std::getline(ss, got);
-        std::getline(ans, want);
+        ss >> got;
+        ans >> want;
         if(ss.fail() && ans.fail()) {
             break;
         }
 
-        ++lineCount;
-        ASSERT_EQ(got, want) << "line = " << lineCount;
+        ASSERT_TRUE(inBounds(want, got)) << "want = " << want << " got = " << got << " i = " << i;
+        ++i;
     }
 }
